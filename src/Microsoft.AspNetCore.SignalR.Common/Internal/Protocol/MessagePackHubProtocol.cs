@@ -22,8 +22,6 @@ namespace Microsoft.AspNetCore.SignalR.Internal.Protocol
 
         public string Name => "messagepack";
 
-        public ProtocolType ProtocolType => ProtocolType.Binary;
-
         public bool TryParseMessages(ReadOnlyBuffer<byte> input, IInvocationBinder binder, out IList<HubMessage> messages)
         {
             messages = new List<HubMessage>();

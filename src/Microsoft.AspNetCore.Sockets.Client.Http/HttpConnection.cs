@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Channels;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Sockets.Client.Internal;
 using Microsoft.AspNetCore.Sockets.Internal;
 using Microsoft.Extensions.Logging;
@@ -33,6 +34,8 @@ namespace Microsoft.AspNetCore.Sockets.Client
         private WritableChannel<SendMessage> Output => _transportChannel.Out;
 
         public Uri Url { get; }
+
+        public IFeatureCollection Features => throw new NotImplementedException();
 
         public event Func<Task> Connected;
         public event Func<byte[], Task> Received;

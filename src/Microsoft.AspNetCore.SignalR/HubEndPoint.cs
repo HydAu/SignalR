@@ -85,7 +85,6 @@ namespace Microsoft.AspNetCore.SignalR
                         // for a particular connection, so we store it here.
                         var protocol = _protocolResolver.GetProtocol(negotiationMessage.Protocol, connection);
                         connection.Metadata[HubConnectionMetadataNames.HubProtocol] = protocol;
-                        connection.Metadata["Binary"] = protocol.ProtocolType == ProtocolType.Binary;
                         return;
                     }
                 }
