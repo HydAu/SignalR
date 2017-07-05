@@ -183,6 +183,8 @@ namespace Microsoft.AspNetCore.SignalR.Client.Tests
 
             public string Name { get => "MockHubProtocol"; }
 
+            public ProtocolKind ProtocolKind => ProtocolKind.Text;
+
             public bool TryParseMessages(ReadOnlyBuffer<byte> input, IInvocationBinder binder, out IList<HubMessage> messages)
             {
                 messages = new List<HubMessage>();

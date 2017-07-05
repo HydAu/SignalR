@@ -11,6 +11,8 @@ namespace Microsoft.AspNetCore.SignalR.Internal.Protocol
     {
         string Name { get; }
 
+        ProtocolKind ProtocolKind { get; }
+
         bool TryParseMessages(ReadOnlyBuffer<byte> input, IInvocationBinder binder, out IList<HubMessage> messages);
 
         void WriteMessage(HubMessage message, Stream output);

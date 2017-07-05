@@ -25,6 +25,8 @@ namespace Microsoft.AspNetCore.Sockets.Client
 
         public Task Running { get; private set; } = Task.CompletedTask;
 
+        public Mode AvailableModes => Mode.Text;
+
         public ServerSentEventsTransport(HttpClient httpClient)
             : this(httpClient, null)
         { }

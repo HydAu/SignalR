@@ -32,6 +32,8 @@ namespace Microsoft.AspNetCore.Sockets.Client
 
         public Task Running { get; private set; } = Task.CompletedTask;
 
+        public Mode AvailableModes => Mode.Text | Mode.Binary;
+
         public async Task StartAsync(Uri url, Channel<byte[], SendMessage> application)
         {
             _logger.LogInformation("Starting {0}", nameof(WebSocketsTransport));

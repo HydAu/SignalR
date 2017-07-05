@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Channels;
 using Microsoft.AspNetCore.SignalR.Internal;
 using Microsoft.AspNetCore.SignalR.Internal.Protocol;
+using Microsoft.AspNetCore.Sockets;
 using Microsoft.AspNetCore.Sockets.Client;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -158,6 +159,12 @@ namespace Microsoft.AspNetCore.SignalR.Client
             try
             {
                 var payload = _protocol.WriteToArray(invocationMessage);
+                if (((_connection.Features.Get<ICanHasBinaryFeature>()?.AvailableModes ?? Mode.Text) & Mode.Binary) == 0
+                        && _protocol.ProtocolKind == ProtocolKind.Text)
+                {
+                    // TODO: base64 encode
+                    throw new NotImplementedException();
+                }
 
                 _logger.LogInformation("Sending Invocation '{invocationId}'", invocationMessage.InvocationId);
 
@@ -174,6 +181,13 @@ namespace Microsoft.AspNetCore.SignalR.Client
 
         private async Task OnDataReceivedAsync(byte[] data)
         {
+            if (((_connection.Features.Get<ICanHasBinaryFeature>()?.AvailableModes ?? Mode.Text) & Mode.Binary) == 0
+                && _protocol.ProtocolKind == ProtocolKind.Text)
+            {
+                // TODO: base64 decode
+                throw new NotImplementedException();
+            }
+
             if (_protocol.TryParseMessages(data, _binder, out var messages))
             {
                 foreach (var message in messages)

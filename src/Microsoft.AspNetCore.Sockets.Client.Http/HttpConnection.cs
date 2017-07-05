@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Sockets.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Sockets.Client.Http.Internal;
 
 namespace Microsoft.AspNetCore.Sockets.Client
 {
@@ -128,6 +129,7 @@ namespace Microsoft.AspNetCore.Sockets.Client
                 }
 
                 _transport = _transportFactory.CreateTransport(GetAvailableServerTransports(negotiationResponse));
+                Features.Set(new CanHasBinaryFeature(_transport.AvailableModes));
 
                 var connectUrl = CreateConnectUrl(Url, negotiationResponse);
                 _logger.LogDebug("Starting transport '{0}' with Url: {1}", _transport.GetType().Name, connectUrl);

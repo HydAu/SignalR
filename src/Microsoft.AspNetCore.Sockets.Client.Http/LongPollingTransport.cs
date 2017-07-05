@@ -24,6 +24,8 @@ namespace Microsoft.AspNetCore.Sockets.Client
 
         public Task Running { get; private set; } = Task.CompletedTask;
 
+        public Mode AvailableModes => Mode.Binary | Mode.Text;
+
         public LongPollingTransport(HttpClient httpClient)
             : this(httpClient, null)
         { }

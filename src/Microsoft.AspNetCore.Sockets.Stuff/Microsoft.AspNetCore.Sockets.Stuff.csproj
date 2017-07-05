@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\build\common.props" />
+
+  <PropertyGroup>
+    <Description>Common primitives for Sockets clients and servers</Description>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageTags>aspnetcore;signalr</PackageTags>
+    <RootNamespace>Microsoft.AspNetCore.Sockets.Http</RootNamespace>
+    <EnableApiCheck>false</EnableApiCheck>
+  </PropertyGroup>
+</Project>

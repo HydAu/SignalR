@@ -11,5 +11,6 @@ namespace Microsoft.AspNetCore.Sockets.Client
     {
         Task StartAsync(Uri url, Channel<byte[], SendMessage> application);
         Task StopAsync();
+        Mode AvailableModes { get; }
     }
 }
