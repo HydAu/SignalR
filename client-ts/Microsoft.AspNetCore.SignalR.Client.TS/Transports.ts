@@ -1,5 +1,6 @@
 import { DataReceived, TransportClosed } from "./Common"
 import { IHttpClient } from "./HttpClient"
+import { Mode } from "./Mode"
 
 export enum TransportType {
     WebSockets,
@@ -8,22 +9,28 @@ export enum TransportType {
 }
 
 export interface ITransport {
-    connect(url: string): Promise<void>;
+    connect(url: string, mode: Mode): Promise<void>;
     send(data: any): Promise<void>;
     stop(): void;
+    mode(): Mode;
     onDataReceived: DataReceived;
     onClosed: TransportClosed;
 }
 
 export class WebSocketTransport implements ITransport {
     private webSocket: WebSocket;
+    private transportMode: Mode;
 
-    connect(url: string): Promise<void> {
+    connect(url: string, mode: Mode): Promise<void> {
+        this.transportMode = mode;
         return new Promise<void>((resolve, reject) => {
             url = url.replace(/^http/, "ws");
 
             let webSocket = new WebSocket(url);
-            webSocket.binaryType = "arraybuffer";
+
+            if (this.transportMode == Mode.Binary) {
+                webSocket.binaryType = "arraybuffer";
+            }
 
             webSocket.onopen = (event: Event) => {
                 console.log(`WebSocket connected to ${url}`);
@@ -72,6 +79,10 @@ export class WebSocketTransport implements ITransport {
         }
     }
 
+    mode() : Mode {
+        return this.transportMode;
+    }
+
     onDataReceived: DataReceived;
     onClosed: TransportClosed;
 }
@@ -81,16 +92,18 @@ export class ServerSentEventsTransport implements ITransport {
     private url: string;
     private queryString: string;
     private httpClient: IHttpClient;
+    private transportMode: Mode;
 
     constructor(httpClient: IHttpClient) {
         this.httpClient = httpClient;
     }
 
-    connect(url: string): Promise<void> {
+    connect(url: string, mode: Mode): Promise<void> {
         if (typeof(EventSource) === "undefined") {
             Promise.reject("EventSource not supported by the browser.")
         }
         this.url = url;
+        this.transportMode = Mode.Text; // SSE is a text protocol
 
         return new Promise<void>((resolve, reject) => {
             let eventSource = new EventSource(this.url);
@@ -142,6 +155,10 @@ export class ServerSentEventsTransport implements ITransport {
         }
     }
 
+    mode() {
+        return this.transportMode;
+    }
+
     onDataReceived: DataReceived;
     onClosed: TransportClosed;
 }
@@ -151,13 +168,15 @@ export class LongPollingTransport implements ITransport {
     private httpClient: IHttpClient;
     private pollXhr: XMLHttpRequest;
     private shouldPoll: boolean;
+    private transportMode: Mode;
 
     constructor(httpClient: IHttpClient) {
         this.httpClient = httpClient;
     }
 
-    connect(url: string): Promise<void> {
+    connect(url: string, mode: Mode): Promise<void> {
         this.url = url;
+        this.transportMode = mode;
         this.shouldPoll = true;
         this.poll(this.url);
         return Promise.resolve();
@@ -169,7 +188,9 @@ export class LongPollingTransport implements ITransport {
         }
 
         let pollXhr = new XMLHttpRequest();
-        pollXhr.responseType = "arraybuffer";
+        if (this.transportMode == Mode.Binary) {
+            pollXhr.responseType = "arraybuffer";
+        }
 
         pollXhr.onload = () => {
             if (pollXhr.status == 200) {
@@ -235,6 +256,9 @@ export class LongPollingTransport implements ITransport {
         }
     }
 
+    mode(): Mode {
+        return this.transportMode;
+    }
     onDataReceived: DataReceived;
     onClosed: TransportClosed;
 }

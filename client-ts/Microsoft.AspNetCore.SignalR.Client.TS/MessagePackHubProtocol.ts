@@ -1,5 +1,6 @@
 import { IHubProtocol, MessageType, HubMessage, InvocationMessage, ResultMessage, CompletionMessage } from "./IHubProtocol";
 import { BinaryMessageFormat } from "./Formatters"
+import { Mode } from "./Mode"
 
 var msgpack = require("msgpack-lite");
 
@@ -8,8 +9,8 @@ export class MessagePackHubProtocol implements IHubProtocol {
         return "messagepack";
     }
 
-    isBinary(): boolean {
-        return true;
+    type(): Mode {
+        return Mode.Binary;
     }
 
     parseMessages(input: ArrayBuffer): HubMessage[] {

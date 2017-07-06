@@ -93,7 +93,7 @@ export class HubConnection {
     }
 
     async start(): Promise<void> {
-        await this.connection.start();
+        await this.connection.start(this.protocol.type());
         await this.connection.send(
             TextMessageFormat.write(
                 JSON.stringify(<NegotiationMessage>{ protocol: this.protocol.name()})));

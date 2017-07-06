@@ -1,4 +1,6 @@
-﻿export const enum MessageType {
+﻿import { Mode } from "./Mode"
+
+export const enum MessageType {
     Invocation = 1,
     Result,
     Completion
@@ -30,7 +32,7 @@ export interface NegotiationMessage {
 
 export interface IHubProtocol {
     name(): string;
-    isBinary(): boolean;
+    type(): Mode;
     parseMessages(input: any): HubMessage[];
     writeMessage(message: HubMessage): any;
 }
